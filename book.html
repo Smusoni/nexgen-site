@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Session – NexGen Football Training Club</title>
+  <meta name="description" content="Book your training session with 18x26 NexGen. Choose your service, pick a time, and pay securely with Stripe.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo.png" alt="18x26 NexGen">
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="training.html">Training</a>
+        <a href="services.html">Services &amp; Pricing</a>
+        <a href="contact.html">Contact</a>
+        <a href="book.html" class="btn btn-primary btn-sm active">Book Session</a>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <p class="section-subtitle">Booking</p>
+      <h1>Book a Session</h1>
+      <p>Select your service, choose a date &amp; time, and confirm your booking in just a few steps.</p>
+    </div>
+  </div>
+
+  <!-- Booking Form -->
+  <section>
+    <div class="container">
+
+      <!-- Progress Bar -->
+      <div class="booking-progress" id="bookingProgress">
+        <div class="step-indicator active" data-step="1">
+          <div class="step-dot">1</div>
+          <div class="step-label">Service</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-indicator" data-step="2">
+          <div class="step-dot">2</div>
+          <div class="step-label">Date &amp; Time</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-indicator" data-step="3">
+          <div class="step-dot">3</div>
+          <div class="step-label">Details</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-indicator" data-step="4">
+          <div class="step-dot">4</div>
+          <div class="step-label">Summary</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Select Service -->
+      <div class="booking-step active" id="step1">
+        <div class="text-center" style="margin-bottom:2rem;">
+          <h3>Select Your Service</h3>
+          <p class="text-gray">Choose the session type that fits your training goals.</p>
+        </div>
+        <div class="service-options" id="serviceOptions">
+          <div class="service-option" data-service="1on1" data-price="110" data-label="1-on-1 Session">
+            <h4>1-on-1 Session</h4>
+            <div class="so-price">$110</div>
+            <div class="so-desc">Personalized, individual training</div>
+          </div>
+          <div class="service-option" data-service="group2" data-price="65" data-label="Group Session (2 players) — $65/player">
+            <h4>Group — 2 Players</h4>
+            <div class="so-price">$65<span>/player</span></div>
+            <div class="so-desc">Train with a partner</div>
+          </div>
+          <div class="service-option" data-service="group34" data-price="50" data-label="Group Session (3–4 players) — $50/player">
+            <h4>Group — 3–4 Players</h4>
+            <div class="so-price">$50<span>/player</span></div>
+            <div class="so-desc">Small group training</div>
+          </div>
+          <div class="service-option" data-service="group56" data-price="40" data-label="Group Session (5–6 players) — $40/player">
+            <h4>Group — 5–6 Players</h4>
+            <div class="so-price">$40<span>/player</span></div>
+            <div class="so-desc">Larger group, great value</div>
+          </div>
+          <div class="service-option" data-service="collegepro" data-price="0" data-label="College & Pro Session">
+            <h4>College &amp; Pro</h4>
+            <div class="so-price">Custom</div>
+            <div class="so-desc">Contact for pricing</div>
+          </div>
+        </div>
+        <div class="booking-nav">
+          <div></div>
+          <button class="btn btn-primary" id="toStep2">Next Step &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Date & Time -->
+      <div class="booking-step" id="step2">
+        <div class="text-center" style="margin-bottom:2rem;">
+          <h3>Choose Date &amp; Time</h3>
+          <p class="text-gray">Pick a date and your preferred time slot.</p>
+        </div>
+        <div class="date-time-grid">
+          <div class="form-group">
+            <label for="bookingDate">Select Date</label>
+            <input type="date" id="bookingDate" min="">
+          </div>
+          <div>
+            <label style="display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:.5rem;color:var(--clr-text);">Preferred Time</label>
+            <div class="time-slots" id="timeSlots">
+              <div class="time-slot" data-time="9:00 AM">9:00 AM</div>
+              <div class="time-slot" data-time="10:00 AM">10:00 AM</div>
+              <div class="time-slot" data-time="11:00 AM">11:00 AM</div>
+              <div class="time-slot" data-time="1:00 PM">1:00 PM</div>
+              <div class="time-slot" data-time="2:00 PM">2:00 PM</div>
+              <div class="time-slot" data-time="3:00 PM">3:00 PM</div>
+              <div class="time-slot" data-time="4:00 PM">4:00 PM</div>
+              <div class="time-slot" data-time="5:00 PM">5:00 PM</div>
+              <div class="time-slot" data-time="6:00 PM">6:00 PM</div>
+            </div>
+          </div>
+        </div>
+        <div class="booking-nav">
+          <button class="btn btn-outline" id="backToStep1">&larr; Back</button>
+          <button class="btn btn-primary" id="toStep3">Next Step &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Basic Details -->
+      <div class="booking-step" id="step3">
+        <div class="text-center" style="margin-bottom:2rem;">
+          <h3>Your Details</h3>
+          <p class="text-gray">Tell us a bit about yourself so we can prepare for your session.</p>
+        </div>
+        <div style="max-width:550px;margin:0 auto;">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" placeholder="John">
+              <div class="form-error">First name is required</div>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" placeholder="Doe">
+              <div class="form-error">Last name is required</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" placeholder="john@example.com">
+            <div class="form-error">Valid email is required</div>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" placeholder="(614) 555-0123">
+            <div class="form-error">Phone number is required</div>
+          </div>
+          <div class="form-group">
+            <label for="notes">Additional Notes (optional)</label>
+            <textarea id="notes" placeholder="Any specific goals, injuries, or things we should know about..."></textarea>
+          </div>
+        </div>
+        <div class="booking-nav">
+          <button class="btn btn-outline" id="backToStep2">&larr; Back</button>
+          <button class="btn btn-primary" id="toStep4">Review Booking &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Summary -->
+      <div class="booking-step" id="step4">
+        <div class="text-center" style="margin-bottom:2rem;">
+          <h3>Booking Summary</h3>
+          <p class="text-gray">Review your booking details before confirming.</p>
+        </div>
+        <div class="summary-table">
+          <div class="summary-row">
+            <span class="label">Service</span>
+            <span class="value" id="summaryService">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Date</span>
+            <span class="value" id="summaryDate">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Time</span>
+            <span class="value" id="summaryTime">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Name</span>
+            <span class="value" id="summaryName">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Email</span>
+            <span class="value" id="summaryEmail">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">Phone</span>
+            <span class="value" id="summaryPhone">—</span>
+          </div>
+          <div class="summary-row" id="summaryNotesRow" style="display:none;">
+            <span class="label">Notes</span>
+            <span class="value" id="summaryNotes">—</span>
+          </div>
+          <div class="summary-row total">
+            <span class="label">Total</span>
+            <span class="value" id="summaryTotal">—</span>
+          </div>
+        </div>
+        <div class="booking-nav">
+          <button class="btn btn-outline" id="backToStep3">&larr; Back</button>
+          <button class="btn btn-primary" id="confirmBooking">Confirm &amp; Pay &rarr;</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <img src="images/logo.png" alt="18x26 NexGen" style="height:40px;">
+          </a>
+          <p>Empowering the next generation with expert coaching, world-class training, and a passion for the game.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook">Fb</a>
+            <a href="#" aria-label="X / Twitter">X</a>
+            <a href="#" aria-label="Instagram">Ig</a>
+            <a href="#" aria-label="LinkedIn">Li</a>
+          </div>
+        </div>
+        <div>
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="training.html">Training</a></li>
+            <li><a href="services.html">Services &amp; Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Support</h5>
+          <ul>
+            <li><a href="book.html">Book a Session</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="contact.html#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Contact</h5>
+          <ul>
+            <li><a href="tel:6145892660">614-589-2660</a></li>
+            <li><a href="mailto:abdirisakmohamed26@gmail.com">abdirisakmohamed26@gmail.com</a></li>
+            <li>1677 Taylor Rd, Gahanna, OH 43230</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 18&times;26 NexGen. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>

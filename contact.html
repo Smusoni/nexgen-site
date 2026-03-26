@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact – NexGen Football Training Club</title>
+  <meta name="description" content="Get in touch with 18x26 NexGen. Contact us for training inquiries, bookings, or general questions.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo.png" alt="18x26 NexGen">
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="training.html">Training</a>
+        <a href="services.html">Services &amp; Pricing</a>
+        <a href="contact.html" class="active">Contact</a>
+        <a href="book.html" class="btn btn-primary btn-sm">Book Session</a>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <p class="section-subtitle">Reach Out</p>
+      <h1>Contact Us</h1>
+      <p>Have questions or need assistance? Our team is here to help you every step of the way.</p>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <section>
+    <div class="container">
+      <div class="contact-grid fade-up">
+
+        <!-- Contact Info -->
+        <div>
+          <h3 style="margin-bottom:2rem;">Get in Touch</h3>
+
+          <div class="contact-info-item">
+            <div class="ci-icon">&#128222;</div>
+            <div>
+              <h4>Phone</h4>
+              <p><a href="tel:6145892660">614-589-2660</a></p>
+              <p>Mon – Fri: 9 AM – 6 PM</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="ci-icon">&#128205;</div>
+            <div>
+              <h4>Location</h4>
+              <p>1677 Taylor Rd, Gahanna, OH 43230<br>United States</p>
+            </div>
+          </div>
+
+          <div class="contact-info-item">
+            <div class="ci-icon">&#9993;</div>
+            <div>
+              <h4>Email</h4>
+              <p><a href="mailto:abdirisakmohamed26@gmail.com">abdirisakmohamed26@gmail.com</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div>
+          <h3 style="margin-bottom:2rem;">Send a Message</h3>
+          <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" id="contactForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contactName">Your Name *</label>
+                <input type="text" id="contactName" name="name" placeholder="John Doe" required>
+              </div>
+              <div class="form-group">
+                <label for="contactEmail">Email Address *</label>
+                <input type="email" id="contactEmail" name="email" placeholder="john@example.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="contactSubject">Subject</label>
+              <input type="text" id="contactSubject" name="subject" placeholder="Training inquiry">
+            </div>
+            <div class="form-group">
+              <label for="contactMessage">Message *</label>
+              <textarea id="contactMessage" name="message" placeholder="How can we help you?" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background:var(--clr-bg-alt);">
+    <div class="container text-center">
+      <p class="section-subtitle">FAQ</p>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-desc">Find quick answers to common questions about our services, process, and support.</p>
+
+      <div class="faq-list fade-up">
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Who is this football training program for?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              This program is designed for beginners to intermediate players. Both boys and girls are welcome, typically from ages 8 to 18+.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            How often are the training sessions?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Training sessions are held 3–5 days per week, with each session lasting approximately 90 minutes to 2 hours.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Are the coaches qualified and experienced?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Yes, all our coaches are certified professionals with extensive coaching and match experience, including MLS and international level play.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What skills are taught during training?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              We focus on ball control, passing, shooting, dribbling, positioning, physical fitness, speed, discipline, and match tactics.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Can beginners join the program?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Absolutely. We provide step-by-step training starting from the basics for beginners. Everyone is welcome regardless of skill level.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Is there any fitness requirement to join?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Basic fitness is sufficient. Overall fitness is developed gradually through our training program. No prior athletic conditioning is needed.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <img src="images/logo.png" alt="18x26 NexGen" style="height:40px;">
+          </a>
+          <p>Empowering the next generation with expert coaching, world-class training, and a passion for the game.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook">Fb</a>
+            <a href="#" aria-label="X / Twitter">X</a>
+            <a href="#" aria-label="Instagram">Ig</a>
+            <a href="#" aria-label="LinkedIn">Li</a>
+          </div>
+        </div>
+        <div>
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="training.html">Training</a></li>
+            <li><a href="services.html">Services &amp; Pricing</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Support</h5>
+          <ul>
+            <li><a href="book.html">Book a Session</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="contact.html#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Contact</h5>
+          <ul>
+            <li><a href="tel:6145892660">614-589-2660</a></li>
+            <li><a href="mailto:abdirisakmohamed26@gmail.com">abdirisakmohamed26@gmail.com</a></li>
+            <li>1677 Taylor Rd, Gahanna, OH 43230</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 18&times;26 NexGen. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
