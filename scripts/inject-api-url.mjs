@@ -1,6 +1,7 @@
 /**
- * Netlify build: set NEXGEN_API_URL to your Render API origin (no trailing slash),
+ * Netlify build: set NEXGEN_API_URL (preferred) to your Render API origin (no trailing slash),
  * e.g. https://nexgen-api.onrender.com — updates book.html + success.html meta tags.
+ * Also accepts nexgen_api_url for the same value (common typo in the Netlify UI).
  * If unset, leaves files unchanged (localhost stays for local-only clones).
  */
 import { readFileSync, writeFileSync } from 'fs';
@@ -10,12 +11,13 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 
-const raw = process.env.NEXGEN_API_URL?.trim();
+const raw =
+  process.env.NEXGEN_API_URL?.trim() || process.env.nexgen_api_url?.trim();
 if (!raw) {
   const onNetlifyProd = process.env.NETLIFY === 'true' && process.env.CONTEXT === 'production';
   if (onNetlifyProd) {
     console.error(
-      'NEXGEN_API_URL is required for production Netlify builds. Site settings → Environment variables → Build: set it to your Render API origin (no trailing slash), e.g. https://nexgen-api-xxxx.onrender.com'
+      'Set NEXGEN_API_URL (or nexgen_api_url) for production Netlify builds: your Render API origin, no trailing slash, e.g. https://nexgen-api-xxxx.onrender.com'
     );
     process.exit(1);
   }
