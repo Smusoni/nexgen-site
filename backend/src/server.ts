@@ -12,9 +12,17 @@ import { startExpirationJob } from './services/expirationService';
 
 const app = express();
 
-app.use(helmet());
-app.use(morgan('dev'));
-app.use(cors({
+function isPublicApiPath(req: express.Request): boolean {
+  const pathOnly = req.originalUrl.split('?')[0];
+  return pathOnly === '/api/public' || pathOnly.startsWith('/api/public/');
+}
+
+const corsPublicBooking = cors({
+  origin: true,
+  credentials: false,
+});
+
+const corsRestricted = cors({
   origin: (origin, cb) => {
     if (!origin) {
       cb(null, true);
@@ -27,7 +35,17 @@ app.use(cors({
     cb(null, false);
   },
   credentials: true,
-}));
+});
+
+app.use(helmet());
+app.use(morgan('dev'));
+app.use((req, res, next) => {
+  if (isPublicApiPath(req)) {
+    corsPublicBooking(req, res, next);
+    return;
+  }
+  corsRestricted(req, res, next);
+});
 
 app.use('/api/webhooks/stripe', webhookRouter);
 
