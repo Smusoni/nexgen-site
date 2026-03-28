@@ -1,19 +1,20 @@
 # Render Blueprint: Postgres + NexGen API
 # Dashboard → New → Blueprint → connect this repo.
 # You will be prompted for env vars marked sync: false.
-
-databases:
-  - name: nexgen-db
-    plan: free
-    databaseName: nexgen
+#
+# Note: Render allows only one Free Postgres per workspace. If creation fails,
+# remove or upgrade an existing free database, or set databases[0].plan to basic-256mb.
 
 services:
   - type: web
     name: nexgen-api
     runtime: node
+    plan: free
+    region: oregon
     rootDir: backend
     buildCommand: npm install && npm run build
-    startCommand: npx prisma migrate deploy && npm start
+    preDeployCommand: npx prisma migrate deploy
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
@@ -38,3 +39,9 @@ services:
         sync: false
       - key: RESEND_API_KEY
         sync: false
+
+databases:
+  - name: nexgen-db
+    plan: free
+    region: oregon
+    databaseName: nexgen

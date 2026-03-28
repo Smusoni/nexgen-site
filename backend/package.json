@@ -18,10 +18,8 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
@@ -33,7 +31,9 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
-    "stripe": "^21.0.1"
+    "stripe": "^21.0.1",
+    "pg": "^8.14.1",
+    "prisma": "^7.5.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -44,7 +44,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.5.0",
     "@types/node-cron": "^3.0.11",
-    "prisma": "^7.5.0",
+    "@types/pg": "^8.11.11",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2"

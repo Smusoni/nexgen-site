@@ -19,10 +19,9 @@ Create a repo and push the `nexgen-site` folder (or your monorepo root that cont
    - `RESEND_API_KEY` — from [resend.com](https://resend.com) (sending access)
 5. Wait for first deploy. Copy the service **URL**, e.g. `https://nexgen-api-xxxx.onrender.com`.
 
-**One-time database setup** (Render Shell on the web service):
+**One-time database setup** (Render Shell on the web service): migrations run on each deploy via `preDeployCommand` in `render.yaml`; seed the DB once:
 
 ```bash
-npx prisma migrate deploy
 npm run db:seed
 ```
 
