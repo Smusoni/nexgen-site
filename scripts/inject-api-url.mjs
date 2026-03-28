@@ -12,6 +12,13 @@ const root = join(__dirname, '..');
 
 const raw = process.env.NEXGEN_API_URL?.trim();
 if (!raw) {
+  const onNetlifyProd = process.env.NETLIFY === 'true' && process.env.CONTEXT === 'production';
+  if (onNetlifyProd) {
+    console.error(
+      'NEXGEN_API_URL is required for production Netlify builds. Site settings → Environment variables → Build: set it to your Render API origin (no trailing slash), e.g. https://nexgen-api-xxxx.onrender.com'
+    );
+    process.exit(1);
+  }
   console.log('NEXGEN_API_URL not set — skipping API URL inject (meta tags unchanged).');
   process.exit(0);
 }

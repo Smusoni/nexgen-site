@@ -31,8 +31,13 @@
       function apiBase() {
         var m = document.querySelector('meta[name="nexgen-api"]');
         var u = m && m.getAttribute('content') ? m.getAttribute('content').trim() : '';
-        if (u) return u.replace(/\/$/, '');
-        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return 'http://localhost:4000';
+        var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        if (u) {
+          var b = u.replace(/\/$/, '');
+          if (!local && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(b)) return '';
+          return b;
+        }
+        if (local) return 'http://localhost:4000';
         return '';
       }
       var params = new URLSearchParams(location.search);

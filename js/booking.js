@@ -8,8 +8,18 @@
   function getApiBase() {
     const meta = document.querySelector('meta[name="nexgen-api"]');
     const fromMeta = meta && meta.getAttribute('content') ? meta.getAttribute('content').trim() : '';
-    if (fromMeta) return fromMeta.replace(/\/$/, '');
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    const isLocalPage =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    if (fromMeta) {
+      const base = fromMeta.replace(/\/$/, '');
+      // Netlify/production sites still ship localhost in meta if NEXGEN_API_URL was never set at build — don't call that URL.
+      if (!isLocalPage && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(base)) {
+        return '';
+      }
+      return base;
+    }
+    if (isLocalPage) {
       return 'http://localhost:4000';
     }
     return '';
@@ -72,7 +82,9 @@
     if (!container) return;
 
     if (!API_BASE) {
-      showServiceError('Set your API URL in the nexgen-api meta tag (Netlify) or run the backend locally.');
+      showServiceError(
+        'Booking API URL is missing. In Netlify: Site settings → Environment variables → add NEXGEN_API_URL (your Render API, e.g. https://yourservice.onrender.com), then trigger a new deploy.'
+      );
       return;
     }
 

@@ -39,9 +39,9 @@ Optional env on Render:
 
 1. [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import from Git**.
 2. Same repo, base directory: **repository root** (where `netlify.toml` lives).
-3. **Site settings → Environment variables → Build**:
+3. **Site settings → Environment variables → Build** (must be available at **build** time, not only runtime):
    - `NEXGEN_API_URL` = your Render API origin, e.g. `https://nexgen-api-xxxx.onrender.com` (no trailing slash)
-4. Trigger deploy. The build runs [`scripts/inject-api-url.mjs`](./scripts/inject-api-url.mjs) and rewrites the `nexgen-api` meta tag in `book.html` and `success.html`.
+4. Trigger deploy. The build runs [`scripts/inject-api-url.mjs`](./scripts/inject-api-url.mjs) and rewrites the `nexgen-api` meta tag in `book.html` and `success.html`. Without this variable, production builds will fail; if you deployed before adding it, booking will error until you set it and **redeploy**.
 
 5. After Netlify gives you a URL, go back to Render and set **`FRONTEND_URL`** to that URL (comma-separate preview + production if needed), then redeploy the API so CORS allows the site.
 
