@@ -3,7 +3,10 @@ dotenv.config();
 
 function parseOrigins(): string[] {
   const raw = process.env.FRONTEND_URL || 'http://localhost:8080';
-  return raw.split(',').map((s) => s.trim()).filter(Boolean);
+  return raw
+    .split(',')
+    .map((s) => s.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
 }
 
 export const config = {
