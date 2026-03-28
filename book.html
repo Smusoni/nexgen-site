@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- DEPLOY: Change to your production API URL, e.g. https://nexgen-api.onrender.com -->
+  <meta name="nexgen-api" content="http://localhost:4000">
   <title>Book a Session – NexGen Football Training Club</title>
   <meta name="description" content="Book your training session with 18x26 NexGen. Choose your service, pick a time, and pay securely with Stripe.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,33 +79,8 @@
           <h3>Select Your Service</h3>
           <p class="text-gray">Choose the session type that fits your training goals.</p>
         </div>
-        <div class="service-options" id="serviceOptions">
-          <div class="service-option" data-service="1on1" data-price="110" data-label="1-on-1 Session">
-            <h4>1-on-1 Session</h4>
-            <div class="so-price">$110</div>
-            <div class="so-desc">Personalized, individual training</div>
-          </div>
-          <div class="service-option" data-service="group2" data-price="65" data-label="Group Session (2 players) — $65/player">
-            <h4>Group — 2 Players</h4>
-            <div class="so-price">$65<span>/player</span></div>
-            <div class="so-desc">Train with a partner</div>
-          </div>
-          <div class="service-option" data-service="group34" data-price="50" data-label="Group Session (3–4 players) — $50/player">
-            <h4>Group — 3–4 Players</h4>
-            <div class="so-price">$50<span>/player</span></div>
-            <div class="so-desc">Small group training</div>
-          </div>
-          <div class="service-option" data-service="group56" data-price="40" data-label="Group Session (5–6 players) — $40/player">
-            <h4>Group — 5–6 Players</h4>
-            <div class="so-price">$40<span>/player</span></div>
-            <div class="so-desc">Larger group, great value</div>
-          </div>
-          <div class="service-option" data-service="collegepro" data-price="0" data-label="College & Pro Session">
-            <h4>College &amp; Pro</h4>
-            <div class="so-price">Custom</div>
-            <div class="so-desc">Contact for pricing</div>
-          </div>
-        </div>
+        <p id="serviceLoadError" class="text-gray hidden" style="margin-bottom:1rem;"></p>
+        <div class="service-options" id="serviceOptions"></div>
         <div class="booking-nav">
           <div></div>
           <button class="btn btn-primary" id="toStep2">Next Step &rarr;</button>
@@ -123,17 +100,8 @@
           </div>
           <div>
             <label style="display:block;font-size:var(--fs-sm);font-weight:var(--fw-medium);margin-bottom:.5rem;color:var(--clr-text);">Preferred Time</label>
-            <div class="time-slots" id="timeSlots">
-              <div class="time-slot" data-time="9:00 AM">9:00 AM</div>
-              <div class="time-slot" data-time="10:00 AM">10:00 AM</div>
-              <div class="time-slot" data-time="11:00 AM">11:00 AM</div>
-              <div class="time-slot" data-time="1:00 PM">1:00 PM</div>
-              <div class="time-slot" data-time="2:00 PM">2:00 PM</div>
-              <div class="time-slot" data-time="3:00 PM">3:00 PM</div>
-              <div class="time-slot" data-time="4:00 PM">4:00 PM</div>
-              <div class="time-slot" data-time="5:00 PM">5:00 PM</div>
-              <div class="time-slot" data-time="6:00 PM">6:00 PM</div>
-            </div>
+            <p id="slotsHint" class="text-gray" style="font-size:var(--fs-sm);margin-bottom:.5rem;">Choose a date to see available times.</p>
+            <div class="time-slots" id="timeSlots"></div>
           </div>
         </div>
         <div class="booking-nav">

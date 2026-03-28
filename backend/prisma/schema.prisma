@@ -1,0 +1,126 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         String   @default("admin")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  auditLogs AuditLog[]
+
+  @@map("admins")
+}
+
+model Service {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  name            String
+  priceCents      Int      @map("price_cents")
+  isGroup         Boolean  @default(false) @map("is_group")
+  defaultCapacity Int      @default(1) @map("default_capacity")
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  slots    Slot[]
+  bookings Booking[]
+
+  @@map("services")
+}
+
+enum SlotStatus {
+  open
+  closed
+  cancelled
+}
+
+model Slot {
+  id               String     @id @default(cuid())
+  serviceId        String     @map("service_id")
+  startAt          DateTime   @map("start_at")
+  endAt            DateTime   @map("end_at")
+  capacityOverride Int?       @map("capacity_override")
+  status           SlotStatus @default(open)
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+
+  service  Service   @relation(fields: [serviceId], references: [id])
+  bookings Booking[]
+
+  @@map("slots")
+}
+
+enum BookingStatus {
+  pending_payment
+  confirmed
+  cancelled
+  expired
+}
+
+model Booking {
+  id                       String        @id @default(cuid())
+  slotId                   String        @map("slot_id")
+  serviceId                String        @map("service_id")
+  playerName               String        @map("player_name")
+  email                    String
+  phone                    String        @default("")
+  notes                    String        @default("")
+  seats                    Int           @default(1)
+  status                   BookingStatus @default(pending_payment)
+  stripeCheckoutSessionId  String?       @unique @map("stripe_checkout_session_id")
+  stripePaymentIntentId    String?       @map("stripe_payment_intent_id")
+  expiresAt                DateTime?     @map("expires_at")
+  createdAt                DateTime      @default(now()) @map("created_at")
+  updatedAt                DateTime      @updatedAt @map("updated_at")
+
+  slot     Slot      @relation(fields: [slotId], references: [id])
+  service  Service   @relation(fields: [serviceId], references: [id])
+  payments Payment[]
+
+  @@map("bookings")
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String        @map("booking_id")
+  amountCents Int           @map("amount_cents")
+  currency    String        @default("usd")
+  provider    String        @default("stripe")
+  providerRef String?       @map("provider_ref")
+  status      PaymentStatus @default(pending)
+  paidAt      DateTime?     @map("paid_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  adminId   String?  @map("admin_id")
+  action    String
+  entity    String
+  entityId  String?  @map("entity_id")
+  payload   Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  admin Admin? @relation(fields: [adminId], references: [id])
+
+  @@map("audit_logs")
+}

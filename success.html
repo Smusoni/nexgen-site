@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- DEPLOY: Change to your production API URL, e.g. https://nexgen-api.onrender.com -->
+  <meta name="nexgen-api" content="http://localhost:4000">
   <title>Booking Confirmed – NexGen Football Training Club</title>
   <meta name="description" content="Your session has been booked with 18x26 NexGen. See you on the pitch!">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,9 +16,9 @@
 
   <div class="success-page">
     <div class="success-content">
-      <div class="success-icon">&#10003;</div>
-      <h1>Booking <span class="text-gold">Confirmed!</span></h1>
-      <p>Thank you for booking with NexGen. You'll receive a confirmation email shortly with all the details. We look forward to seeing you on the pitch!</p>
+      <div class="success-icon" id="statusIcon">&#10003;</div>
+      <h1 id="statusTitle">Booking <span class="text-gold">Confirmed!</span></h1>
+      <p id="statusMsg">Thank you for booking with NexGen. You'll receive a confirmation email shortly with all the details. We look forward to seeing you on the pitch!</p>
       <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
         <a href="index.html" class="btn btn-primary">Back to Home</a>
         <a href="contact.html" class="btn btn-outline">Contact Us</a>
@@ -24,5 +26,47 @@
     </div>
   </div>
 
+  <script>
+    (function () {
+      function apiBase() {
+        var m = document.querySelector('meta[name="nexgen-api"]');
+        var u = m && m.getAttribute('content') ? m.getAttribute('content').trim() : '';
+        if (u) return u.replace(/\/$/, '');
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return 'http://localhost:4000';
+        return '';
+      }
+      var params = new URLSearchParams(location.search);
+      var sid = params.get('session_id');
+      var base = apiBase();
+      if (!sid || !base) return;
+
+      var title = document.getElementById('statusTitle');
+      var msg = document.getElementById('statusMsg');
+      var icon = document.getElementById('statusIcon');
+
+      function poll() {
+        fetch(base + '/api/public/bookings/session/' + encodeURIComponent(sid))
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.status === 'confirmed') {
+              title.innerHTML = 'Booking <span class="text-gold">Confirmed!</span>';
+              msg.textContent = 'Payment received. See you on the pitch!';
+              icon.innerHTML = '&#10003;';
+              return;
+            }
+            if (data.status === 'pending_payment') {
+              title.textContent = 'Processing payment…';
+              msg.textContent = 'Waiting for confirmation. This page will update automatically.';
+              setTimeout(poll, 2000);
+              return;
+            }
+            title.textContent = 'Booking status';
+            msg.textContent = 'Status: ' + (data.status || 'unknown');
+          })
+          .catch(function () { setTimeout(poll, 3000); });
+      }
+      poll();
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+# Local Netlify folder
+.netlify
+
+# Root-level env (if any)
+.env
+.env.local
