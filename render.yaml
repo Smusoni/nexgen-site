@@ -4,6 +4,8 @@
 #
 # Note: Render allows only one Free Postgres per workspace. If creation fails,
 # remove or upgrade an existing free database, or set databases[0].plan to basic-256mb.
+#
+# Free-tier web services cannot use preDeployCommand; migrations run in startCommand.
 
 services:
   - type: web
@@ -13,8 +15,7 @@ services:
     region: oregon
     rootDir: backend
     buildCommand: npm install && npm run build
-    preDeployCommand: npx prisma migrate deploy
-    startCommand: npm start
+    startCommand: npx prisma migrate deploy && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
