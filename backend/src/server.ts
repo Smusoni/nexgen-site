@@ -9,7 +9,7 @@ import { publicRouter } from './routes/public';
 import { adminRouter } from './routes/admin';
 import { webhookRouter } from './routes/webhooks/stripe';
 import { startExpirationJob } from './services/expirationService';
-import { stripeSecretConfigured } from './lib/stripe';
+import { stripe, stripeSecretConfigured } from './lib/stripe';
 
 const app = express();
 
@@ -59,7 +59,28 @@ app.get('/api/health', (_req, res) => {
     timestamp: new Date().toISOString(),
     stripeSecretConfigured,
     frontendOrigin: config.frontendOrigins[0] ?? null,
+    httpsProxySet: Boolean(process.env.HTTPS_PROXY || process.env.HTTP_PROXY),
   });
+});
+
+/** Confirms this server can reach api.stripe.com (diagnose "connection to Stripe" checkout errors). */
+app.get('/api/health/stripe-reach', async (_req, res) => {
+  if (!stripeSecretConfigured) {
+    res.status(503).json({ ok: false, message: 'STRIPE_SECRET_KEY not configured' });
+    return;
+  }
+  try {
+    await stripe.customers.list({ limit: 1 });
+    res.json({ ok: true, message: 'Server reached Stripe API successfully' });
+  } catch (e: any) {
+    console.error('[health/stripe-reach]', e);
+    res.status(502).json({
+      ok: false,
+      message: e?.message || 'Stripe request failed',
+      type: e?.type,
+      code: e?.code,
+    });
+  }
 });
 
 app.use('/api/public', publicRouter);

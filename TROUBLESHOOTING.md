@@ -22,7 +22,18 @@ If the service is asleep (free tier), wait ~1 minute and retry.
 - Stripe Dashboard: **Test mode** on when using `sk_test_...`.
 - After changing env vars, **redeploy** the service.
 
-If checkout still fails, read **Render → Logs** when you click pay — the new messages explain auth vs network errors.
+### “An error occurred with our connection to Stripe. Request was retried…”
+
+That text comes from the **Stripe SDK on your server** (Render → `api.stripe.com`), not from your browser.
+
+1. Open **`/api/health/stripe-reach`** on your API, e.g.  
+   `https://YOUR-API.onrender.com/api/health/stripe-reach`  
+   - **`ok: true`** → Stripe is reachable; if checkout still fails, check Render logs for the next error.  
+   - **`ok: false`** → network/auth: confirm key, no bad **`HTTPS_PROXY`/`HTTP_PROXY`** on the service, try redeploy. The app forces **IPv4** to Stripe to avoid broken IPv6 on some hosts.
+
+2. Check **`/api/health`**: `httpsProxySet` should be **`false`** unless you intentionally use a proxy.
+
+3. Read **Render → Logs** when you click **Confirm & Pay**.
 
 ## 3. Admin login
 
