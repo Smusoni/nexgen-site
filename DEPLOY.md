@@ -41,6 +41,8 @@ Optional env on Render:
 
 5. After Netlify gives you a URL, go back to Render and set **`FRONTEND_URL`** to that URL (comma-separate preview + production if needed), then redeploy the API so CORS allows the site.
 
+**Admin password:** if login fails, reset in Render Shell: `npx tsx scripts/reset-admin-password.ts EMAIL NewPassword` (from `backend/`). See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
+
 ## 4. Smoke test
 
 - Open Netlify `book.html`, complete a **test** checkout, confirm `success.html` shows confirmed.

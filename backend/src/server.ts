@@ -9,6 +9,7 @@ import { publicRouter } from './routes/public';
 import { adminRouter } from './routes/admin';
 import { webhookRouter } from './routes/webhooks/stripe';
 import { startExpirationJob } from './services/expirationService';
+import { stripeSecretConfigured } from './lib/stripe';
 
 const app = express();
 
@@ -53,7 +54,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    stripeSecretConfigured,
+    frontendOrigin: config.frontendOrigins[0] ?? null,
+  });
 });
 
 app.use('/api/public', publicRouter);
@@ -72,6 +78,15 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 
 app.listen(config.port, () => {
   console.log(`NexGen API running on http://localhost:${config.port}`);
+  if (config.nodeEnv === 'production') {
+    if (!stripeSecretConfigured) {
+      console.warn('[nexgen] STRIPE_SECRET_KEY missing or invalid — checkout will fail until set.');
+    }
+    const fe = config.frontendOrigins[0] || '';
+    if (!fe || fe.includes('localhost')) {
+      console.warn('[nexgen] FRONTEND_URL may be unset — Stripe success/cancel URLs use first origin.');
+    }
+  }
   startExpirationJob();
 });
 

@@ -7,7 +7,7 @@ Static marketing site (Netlify) + **booking API** (`backend/`) with PostgreSQL, 
 1. Serve locally: `npx http-server -p 8080` (from this directory).
 2. **Booking** talks to the API. For **production on Netlify**, set build env **`NEXGEN_API_URL`** (see [`DEPLOY.md`](./DEPLOY.md)); the build injects `book.html` / `success.html` meta tags. For local dev, meta defaults to `http://localhost:4000`.
 
-3. **Go-live checklist:** follow **[DEPLOY.md](./DEPLOY.md)** (Render Blueprint + Netlify + Stripe webhook).
+3. **Go-live checklist:** follow **[DEPLOY.md](./DEPLOY.md)** (Render Blueprint + Netlify + Stripe webhook). If something breaks in production, see **[TROUBLESHOOTING.md](./TROUBLESHOOTING.md)**.
 
 ### Contact form (optional)
 
