@@ -147,6 +147,12 @@ h4 { font-size: var(--fs-xl); letter-spacing: -1px; }
   max-width: 640px;
   margin: 0 auto 3rem;
 }
+.section-desc a {
+  color: var(--clr-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.section-desc a:hover { color: var(--clr-blue-dark); }
 /* High-contrast halos on busy logo */
 .section-title,
 .section-desc {
@@ -470,6 +476,19 @@ section {
   flex-shrink: 0;
 }
 .pricing-card .btn { width: 100%; }
+.pricing-footnote {
+  font-size: var(--fs-sm);
+  color: var(--clr-text-light);
+  max-width: 760px;
+  margin: 2rem auto 0;
+  line-height: 1.65;
+  text-align: center;
+}
+.membership-grid {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 /* ---------- Session Pricing (Home) ---------- */
 .session-card {
