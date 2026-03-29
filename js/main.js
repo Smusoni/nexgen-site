@@ -103,4 +103,15 @@
     }
   });
 
+  const adminLink = document.getElementById('nexgen-admin-link');
+  if (adminLink) {
+    const meta = document.querySelector('meta[name="nexgen-api"]');
+    const base = meta?.getAttribute('content')?.trim().replace(/\/$/, '');
+    if (base) {
+      adminLink.href = `${base}/admin/`;
+      adminLink.target = '_blank';
+      adminLink.rel = 'noopener noreferrer';
+    }
+  }
+
 })();

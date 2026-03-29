@@ -890,6 +890,13 @@ section {
   font-size: var(--fs-sm);
   color: rgba(255,255,255,.45);
 }
+.footer-staff { margin-left: .125rem; white-space: nowrap; }
+.footer-staff-link {
+  color: rgba(255,255,255,.45);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-staff-link:hover { color: var(--clr-gold); }
 
 /* ---------- Success Page ---------- */
 .success-page {

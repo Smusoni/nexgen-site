@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- DEPLOY: NEXGEN_API_URL replaces nexgen-api on Netlify build -->
+  <meta name="nexgen-api" content="http://localhost:4000">
   <title>About – NexGen Football Training Club</title>
   <meta name="description" content="Learn about 18x26 NexGen, our coaching staff, training philosophy, and professional football experience.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -170,7 +172,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        &copy; 2026 18&times;26 NexGen. All rights reserved.
+        &copy; 2026 18&times;26 NexGen. All rights reserved.<span class="footer-staff"> · <a href="#" id="nexgen-admin-link" class="footer-staff-link">Staff login</a></span>
       </div>
     </div>
   </footer>

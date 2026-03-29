@@ -1,10 +1,10 @@
 /**
  * Netlify build: set NEXGEN_API_URL (preferred) to your Render API origin (no trailing slash),
- * e.g. https://nexgen-api.onrender.com — updates book.html + success.html meta tags.
+ * e.g. https://nexgen-api.onrender.com — updates nexgen-api meta tags in all root *.html that have one.
  * Also accepts nexgen_api_url for the same value (common typo in the Netlify UI).
  * If unset, leaves files unchanged (localhost stays for local-only clones).
  */
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, readdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -30,12 +30,14 @@ const metaLine = `<meta name="nexgen-api" content="${api}">`;
 const metaRe =
   /<meta\s+name\s*=\s*["']nexgen-api["']\s+content\s*=\s*["'][^"']*["']\s*\/?>/gi;
 
-for (const file of ['book.html', 'success.html']) {
+const htmlFiles = readdirSync(root).filter((f) => f.endsWith('.html'));
+for (const file of htmlFiles) {
   const p = join(root, file);
   let html = readFileSync(p, 'utf8');
+  if (!/name\s*=\s*["']nexgen-api["']/i.test(html)) continue;
   const next = html.replace(metaRe, metaLine);
   if (next === html) {
-    console.warn(`Warning: no nexgen-api meta found in ${file}`);
+    console.warn(`Warning: nexgen-api meta present but pattern did not match in ${file}`);
     continue;
   }
   writeFileSync(p, next, 'utf8');
