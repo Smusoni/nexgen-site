@@ -36,6 +36,8 @@ That text comes from the **Stripe SDK on your server** (Render → `api.stripe.c
 
 3. Read **Render → Logs** when you click **Confirm & Pay**.
 
+If you’re already on a **paid** Render instance and `stripe-reach` still returns `StripeConnectionError`, redeploy after the latest code (uses **Fetch** for Stripe instead of the Node HTTPS agent). If it still fails, contact **Render support** with the JSON from `stripe-reach` — something on the path to `api.stripe.com` is still blocking.
+
 ## 3. Admin login
 
 Login uses the **email + password stored in the database**, not live `ADMIN_PASSWORD` changes.
