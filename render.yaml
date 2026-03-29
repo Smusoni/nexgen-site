@@ -16,7 +16,8 @@ services:
     rootDir: backend
     # NODE_ENV=production omits devDependencies; TypeScript is required to build.
     buildCommand: npm install --include=dev && npm run build
-    startCommand: npx prisma migrate deploy && npm start
+    # Idempotent: upserts default services + admin; fixes empty DB without manual Shell.
+    startCommand: npx prisma migrate deploy && npx prisma db seed && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION

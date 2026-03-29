@@ -19,11 +19,7 @@ Create a repo and push the `nexgen-site` folder (or your monorepo root that cont
    - `RESEND_API_KEY` — from [resend.com](https://resend.com) (sending access)
 5. Wait for first deploy. Copy the service **URL**, e.g. `https://nexgen-api-xxxx.onrender.com`.
 
-**One-time database setup** (Render Shell on the web service): on the **free** web tier, Render does not support `preDeployCommand`, so migrations run at **service start** from `startCommand` in `render.yaml`. Seed the DB once:
-
-```bash
-npm run db:seed
-```
+**Database setup:** each deploy runs `prisma migrate deploy` then **`prisma db seed`** (idempotent: default services + admin). You can still run `npm run db:seed` manually in Render Shell if needed.
 
 **Stripe webhook (production):** Developers → Webhooks → endpoint  
 `https://YOUR-RENDER-URL/api/webhooks/stripe`  
