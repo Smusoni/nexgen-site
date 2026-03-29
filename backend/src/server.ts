@@ -13,6 +13,19 @@ import { stripe, stripeSecretConfigured } from './lib/stripe';
 
 const app = express();
 
+/** Collapse accidental double slashes (e.g. /api//health → /api/health) so pasted URLs still match routes. */
+app.use((req, _res, next) => {
+  if (!req.url.includes('//')) {
+    next();
+    return;
+  }
+  const q = req.url.indexOf('?');
+  const pathPart = q === -1 ? req.url : req.url.slice(0, q);
+  const query = q === -1 ? '' : req.url.slice(q);
+  req.url = pathPart.replace(/\/+/g, '/') + query;
+  next();
+});
+
 function isPublicApiPath(req: express.Request): boolean {
   const pathOnly = req.originalUrl.split('?')[0];
   return pathOnly === '/api/public' || pathOnly.startsWith('/api/public/');

@@ -26,8 +26,9 @@ If the service is asleep (free tier), wait ~1 minute and retry.
 
 That text comes from the **Stripe SDK on your server** (Render → `api.stripe.com`), not from your browser.
 
-1. Open **`/api/health/stripe-reach`** on your API, e.g.  
+1. Open **`/api/health/stripe-reach`** on your API — use **single** slashes only, e.g.  
    `https://YOUR-API.onrender.com/api/health/stripe-reach`  
+   (not `api//health` — that was a typo in the path.)  
    - **`ok: true`** → Stripe is reachable; if checkout still fails, check Render logs for the next error.  
    - **`ok: false`** → network/auth: confirm key, no bad **`HTTPS_PROXY`/`HTTP_PROXY`** on the service, try redeploy. The app forces **IPv4** to Stripe to avoid broken IPv6 on some hosts.
 
