@@ -67,6 +67,29 @@ body {
   color: var(--clr-text);
   background: var(--clr-bg);
   line-height: 1.7;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('../images/logo.png') center / cover no-repeat;
+  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
+}
+/* Barely-there veil — keep the logo dominant; type uses shadows below */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(252, 252, 252, 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
+body > * {
+  position: relative;
+  z-index: 1;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -116,6 +139,36 @@ h4 { font-size: var(--fs-xl); letter-spacing: -1px; }
   color: var(--clr-text-light);
   max-width: 640px;
   margin: 0 auto 3rem;
+}
+/* Readable on busy logo (sections without inline solid bg still show the mark) */
+.section-title,
+.section-desc {
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 1),
+    0 0 14px rgba(255, 255, 255, 0.9),
+    0 2px 8px rgba(255, 255, 255, 0.75);
+}
+.section-subtitle {
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.92),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.page-header .section-title,
+.page-header .section-subtitle,
+.page-header h1,
+.page-header > .container > p {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+}
+.hero h1,
+.hero p {
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
+}
+.bio-content :is(h2, p),
+.bio-highlights li {
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 1),
+    0 0 12px rgba(255, 255, 255, 0.88),
+    0 2px 6px rgba(255, 255, 255, 0.7);
 }
 
 /* ---------- Layout ---------- */
@@ -201,10 +254,32 @@ section {
   font-weight: var(--fw-bold);
   font-size: var(--fs-lg);
 }
+/* Ground the mark: readable on any scroll / hero overlap */
+.navbar .nav-logo {
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.navbar.scrolled .nav-logo {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.footer-brand > .nav-logo {
+  display: inline-flex;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.25rem;
+}
 .nav-logo img {
   height: 45px;
   width: auto;
   object-fit: contain;
+  display: block;
 }
 .nav-links {
   display: flex;
