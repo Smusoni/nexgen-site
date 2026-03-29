@@ -38,5 +38,6 @@ export const config = {
       .map((s) => s.trim())
       .filter(Boolean),
   },
-  bookingExpirationMinutes: 15,
+  /** Pending booking hold + Stripe Checkout session lifetime. Stripe requires expires_at ≥ 30 min from session creation. */
+  bookingExpirationMinutes: 30,
 };

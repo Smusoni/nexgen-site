@@ -54,7 +54,9 @@ export async function createCheckoutSession(
       },
       success_url: `${config.frontendUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${config.frontendUrl}/book.html?cancelled=true`,
-      expires_at: Math.floor(Date.now() / 1000) + config.bookingExpirationMinutes * 60,
+      // Stripe: expires_at must be at least 30 minutes from now (API error if shorter).
+      expires_at:
+        Math.floor(Date.now() / 1000) + Math.max(30, config.bookingExpirationMinutes) * 60,
     });
   } catch (err) {
     console.error('[stripe] checkout.sessions.create failed', err);

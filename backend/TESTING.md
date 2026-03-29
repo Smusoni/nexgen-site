@@ -14,7 +14,7 @@
 - [x] Webhook retry: no duplicate payment rows — idempotent (webhook-test.js #5)
 - [x] Invalid webhook signature rejected with 400 (webhook-test.js #6)
 - [x] Expired checkout session webhook: pending booking cancelled (webhook-test.js #7)
-- [ ] Abandoned checkout: cron marks `expired` after 15 min (manual timing test)
+- [ ] Abandoned checkout: cron marks `expired` after hold window (30 min; Stripe Checkout minimum)
 
 ## Admin
 
