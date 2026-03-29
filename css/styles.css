@@ -166,14 +166,6 @@ h4 { font-size: var(--fs-xl); letter-spacing: -1px; }
 .hero p {
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
 }
-.bio-content :is(h2, p),
-.bio-highlights li {
-  text-shadow:
-    0 0 2px rgba(255, 255, 255, 1),
-    0 0 16px rgba(255, 255, 255, 0.92),
-    0 2px 8px rgba(255, 255, 255, 0.85);
-}
-
 /* ---------- Layout ---------- */
 .container {
   width: 90%;
@@ -614,6 +606,16 @@ section {
 
 /* ---------- About Page Extras ---------- */
 .bio-section { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.bio-content {
+  background: var(--clr-surface);
+  padding: 2rem 2.25rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--clr-border);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+}
+.bio-content .section-subtitle {
+  text-shadow: none;
+}
 .bio-img {
   border-radius: var(--radius-xl);
   overflow: hidden;
@@ -625,13 +627,13 @@ section {
   color: var(--clr-gray);
 }
 .bio-img img { width: 100%; height: 100%; object-fit: cover; }
-.bio-content h2 { margin-bottom: 1rem; }
-.bio-content p { color: var(--clr-text-light); margin-bottom: 1rem; }
+.bio-content h2 { margin-bottom: 1rem; color: var(--clr-dark); }
+.bio-content p { color: var(--clr-text); margin-bottom: 1rem; }
 .bio-highlights { margin-top: 1.5rem; }
 .bio-highlights li {
   padding: .5rem 0;
   font-size: var(--fs-sm);
-  color: var(--clr-text-light);
+  color: var(--clr-text);
   display: flex;
   align-items: flex-start;
   gap: .75rem;
