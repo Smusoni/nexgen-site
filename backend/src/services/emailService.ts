@@ -1,5 +1,5 @@
 import { config } from '../config';
-import type { Booking, Service, Slot } from '@prisma/client';
+import type { AnalysisPurchase, Booking, MembershipSubscription, Service, Slot } from '@prisma/client';
 
 type BookingWithRelations = Booking & { service: Service; slot: Slot };
 
@@ -86,6 +86,102 @@ export async function sendAdminBookingConfirmedEmail(booking: BookingWithRelatio
     }),
   });
 
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Resend API ${res.status}: ${body}`);
+  }
+}
+
+function analysisPackLabel(pack: string): string {
+  if (pack === 'pack3') return '3-game pack';
+  if (pack === 'pack5') return '5-game pack';
+  return 'Single game';
+}
+
+export async function sendAdminAnalysisPurchaseEmail(purchase: AnalysisPurchase): Promise<void> {
+  const apiKey = config.resend.apiKey;
+  if (!apiKey) {
+    console.info('RESEND_API_KEY not set — skipping admin analysis email');
+    return;
+  }
+  const to = config.resend.notifyEmails;
+  if (to.length === 0) return;
+
+  const subject = `Game analysis purchase — ${analysisPackLabel(purchase.pack)} (${formatMoney(purchase.amountCents)})`;
+  const html = `
+<!DOCTYPE html>
+<html>
+<body style="font-family: system-ui, sans-serif; line-height: 1.5; color: #111;">
+  <h2>Game analysis paid</h2>
+  <table style="border-collapse: collapse; margin-top: 1rem;">
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Customer</strong></td><td>${escapeHtml(purchase.customerName || '—')}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Email</strong></td><td>${escapeHtml(purchase.customerEmail)}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Pack</strong></td><td>${escapeHtml(analysisPackLabel(purchase.pack))}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Paid</strong></td><td>${formatMoney(purchase.amountCents)}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Stripe session</strong></td><td><code>${escapeHtml(purchase.stripeCheckoutSessionId)}</code></td></tr>
+  </table>
+  <p style="margin-top: 1rem; font-size: 0.9rem; color: #555;">Follow up to collect match footage and deliver the analysis.</p>
+</body>
+</html>`.trim();
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ from: config.resend.from, to, subject, html }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Resend API ${res.status}: ${body}`);
+  }
+}
+
+function membershipPlanLabel(plan: string): string {
+  if (plan === 'intensive') return 'Intensive Training + Film ($450/mo)';
+  return 'Weekly Training + Film ($300/mo)';
+}
+
+export async function sendAdminMembershipStartedEmail(
+  sub: MembershipSubscription,
+): Promise<void> {
+  const apiKey = config.resend.apiKey;
+  if (!apiKey) {
+    console.info('RESEND_API_KEY not set — skipping admin membership email');
+    return;
+  }
+  const to = config.resend.notifyEmails;
+  if (to.length === 0) return;
+
+  const subject = `New membership — ${membershipPlanLabel(sub.plan)}`;
+  const period = sub.currentPeriodEnd
+    ? formatWhen(sub.currentPeriodEnd)
+    : '—';
+  const html = `
+<!DOCTYPE html>
+<html>
+<body style="font-family: system-ui, sans-serif; line-height: 1.5; color: #111;">
+  <h2>Membership started</h2>
+  <table style="border-collapse: collapse; margin-top: 1rem;">
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Customer</strong></td><td>${escapeHtml(sub.customerName || '—')}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Email</strong></td><td>${escapeHtml(sub.customerEmail)}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Plan</strong></td><td>${escapeHtml(membershipPlanLabel(sub.plan))}</td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Stripe subscription</strong></td><td><code>${escapeHtml(sub.stripeSubscriptionId)}</code></td></tr>
+    <tr><td style="padding: 4px 12px 4px 0;"><strong>Current period ends</strong></td><td>${escapeHtml(period)}</td></tr>
+  </table>
+  <p style="margin-top: 1rem; font-size: 0.9rem; color: #555;">Coordinate weekly sessions and film deliverables per plan.</p>
+</body>
+</html>`.trim();
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ from: config.resend.from, to, subject, html }),
+  });
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`Resend API ${res.status}: ${body}`);

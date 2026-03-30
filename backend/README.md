@@ -5,7 +5,10 @@ Node.js + Express + PostgreSQL + Prisma + Stripe Checkout + Admin dashboard.
 ## Quick start (local)
 
 1. Copy `.env.example` to `.env` and fill values.
-2. Create a Postgres database and set `DATABASE_URL`.
+2. **PostgreSQL must be running** before `npm run dev`. If nothing is listening on the host/port in `DATABASE_URL`, you’ll see **`ECONNREFUSED`** in the server log and `/api/public/services` will fail.  
+   Example with Docker:  
+   `docker run --name nexgen-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=nexgen -p 5432:5432 -d postgres:16`  
+   then `DATABASE_URL="postgresql://postgres:postgres@localhost:5432/nexgen?schema=public"`.
 3. Install and migrate:
 
 ```bash

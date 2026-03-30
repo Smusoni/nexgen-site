@@ -23,7 +23,7 @@ Create a repo and push the `nexgen-site` folder (or your monorepo root that cont
 
 **Stripe webhook (production):** Developers → Webhooks → endpoint  
 `https://YOUR-RENDER-URL/api/webhooks/stripe`  
-Events: `checkout.session.completed`, `checkout.session.expired`  
+Events: `checkout.session.completed`, `checkout.session.expired`, `customer.subscription.updated`, `customer.subscription.deleted` (subscriptions need the last two so membership status stays in sync).  
 Paste the signing secret into `STRIPE_WEBHOOK_SECRET` on Render and **Manual Deploy** if needed.
 
 Optional env on Render:
@@ -37,7 +37,7 @@ Optional env on Render:
 2. Same repo, base directory: **repository root** (where `netlify.toml` lives).
 3. **Site settings → Environment variables → Build** (must be available at **build** time, not only runtime):
    - `NEXGEN_API_URL` = your Render API origin, e.g. `https://nexgen-api-xxxx.onrender.com` (no trailing slash). The name must match exactly (all caps); `nexgen_api_url` is also accepted by the build script if you already created it that way.
-4. Trigger deploy. The build runs [`scripts/inject-api-url.mjs`](./scripts/inject-api-url.mjs) and rewrites the `nexgen-api` meta tag in every root HTML file that includes it (booking pages, home, about, training, services, contact — used for the footer **Staff login** link to `/admin/`). Without this variable, production builds will fail; if you deployed before adding it, booking will error until you set it and **redeploy**.
+4. Trigger deploy. The build runs [`scripts/inject-api-url.mjs`](./scripts/inject-api-url.mjs) and rewrites the `nexgen-api` meta tag in every root HTML file that includes it (booking, checkout `pay.html`, success, home, about, training, services, contact — used for API calls and the footer **Staff login** link to `/admin/`). Without this variable, production builds will fail; if you deployed before adding it, booking and checkout will error until you set it and **redeploy**.
 
 5. After Netlify gives you a URL, go back to Render and set **`FRONTEND_URL`** to that URL (comma-separate preview + production if needed), then redeploy the API so CORS allows the site.
 
@@ -46,6 +46,7 @@ Optional env on Render:
 ## 4. Smoke test
 
 - Open Netlify `book.html`, complete a **test** checkout, confirm `success.html` shows confirmed.
+- Open `services.html` → **Buy now** on an analysis pack or **Subscribe** on a membership → `pay.html` → test checkout; confirm `success.html` shows the analysis or membership message after payment.
 - Check `/admin/` on the API host, Resend inbox, and Stripe Dashboard.
 
 ## Order summary

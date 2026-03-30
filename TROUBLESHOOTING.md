@@ -1,6 +1,23 @@
 # Troubleshooting NexGen deploy
 
-Check in this order.
+## Local dev: “connection failed” or booking services won’t load
+
+1. **Browser can’t open `http://127.0.0.1:4000` at all**  
+   The API isn’t running. In `backend/` run **`npm run dev`** and leave that terminal open. You should see: `NexGen API running on http://localhost:4000`.
+
+2. **The API runs, but `http://127.0.0.1:4000/api/public/services` errors or booking shows no services**  
+   The app is up; **PostgreSQL** is not (or `DATABASE_URL` is wrong). **Netlify + Render works** because the cloud API already has a database; **localhost** only works after you run Postgres on your PC (or point `DATABASE_URL` at a reachable cloud DB). In the API terminal, look for **`ECONNREFUSED`** or Prisma **`P1001`** next to `service.findMany`.  
+   - Easiest: from repo root **`docker compose up -d`** (see `docker-compose.yml`), or:  
+     `docker run --name nexgen-pg -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=nexgen -p 5432:5432 -d postgres:16`  
+   - Set **`DATABASE_URL`** in `backend/.env` to match (example):  
+     `postgresql://postgres:postgres@localhost:5432/nexgen?schema=public`  
+   - Then: **`npx prisma migrate deploy`** (or `migrate dev`) and **`npm run db:seed`**.
+
+3. **Quick checks**  
+   - **`GET /api/health`** — JSON `status: "ok"` means the Node process is listening.  
+   - If `/api/public/services` still returns 500, the failure is almost always **database URL or Postgres not running**.
+
+Check in this order (production).
 
 ## 1. API (Render)
 

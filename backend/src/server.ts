@@ -66,6 +66,18 @@ app.use('/api/webhooks/stripe', webhookRouter);
 app.use(express.json());
 app.use(cookieParser());
 
+/** Root: JSON only — marketing HTML is served separately (e.g. http-server on port 8080). */
+app.get('/', (_req, res) => {
+  res.json({
+    name: 'NexGen API',
+    health: '/api/health',
+    publicApi: '/api/public/',
+    admin: '/admin/',
+    hint:
+      'This server does not host index.html. From the repo root run: npx http-server . -p 8080 — then open http://127.0.0.1:8080/',
+  });
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',

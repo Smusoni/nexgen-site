@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1A2626">
+  <!-- DEPLOY: NEXGEN_API_URL replaces nexgen-api on Netlify build -->
+  <meta name="nexgen-api" content="http://localhost:4000">
+  <title>18x26 NexGen · Checkout</title>
+  <meta name="description" content="Complete payment for game film analysis or a monthly training membership at 18x26 NexGen.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo">
+        <img src="images/logo.png" alt="18x26 NexGen">
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="training.html">Training</a>
+        <a href="services.html">Services &amp; Pricing</a>
+        <a href="contact.html">Contact</a>
+        <a href="book.html" class="btn btn-primary btn-sm">Book Session</a>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <div class="page-header">
+    <div class="container">
+      <p class="section-subtitle" id="paySubtitle">Checkout</p>
+      <h1 id="payTitle">Complete your purchase</h1>
+      <p id="payDesc">Enter your details to continue to secure payment with Stripe.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="container" style="max-width:520px;">
+      <p id="payCancelled" class="section-desc hidden" style="color:#b45309;">Checkout was cancelled. You can try again below.</p>
+      <p id="payError" class="section-desc hidden" style="color:#b45309;"></p>
+      <form id="payForm" class="fade-up">
+        <div class="form-group">
+          <label for="payName">Full name *</label>
+          <input type="text" id="payName" name="name" required autocomplete="name" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="payEmail">Email *</label>
+          <input type="email" id="payEmail" name="email" required autocomplete="email" placeholder="you@example.com">
+        </div>
+        <button type="submit" class="btn btn-primary" id="paySubmit" style="width:100%;">Continue to payment</button>
+      </form>
+      <p class="section-desc" style="margin-top:1.5rem;font-size:var(--fs-sm);">
+        <a href="services.html">← Back to Services &amp; Pricing</a>
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        &copy; 2026 18&times;26 NexGen. All rights reserved.<span class="footer-staff"> · <a href="#" id="nexgen-admin-link" class="footer-staff-link">Staff login</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var kind = params.get('kind');
+      var pack = params.get('pack');
+      var plan = params.get('plan');
+      var cancelled = params.get('cancelled');
+
+      function apiBase() {
+        var m = document.querySelector('meta[name="nexgen-api"]');
+        var u = m && m.getAttribute('content') ? m.getAttribute('content').trim() : '';
+        var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        if (u) {
+          var b = u.replace(/\/$/, '');
+          if (!local && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(b)) return '';
+          return b;
+        }
+        if (local) return 'http://localhost:4000';
+        return '';
+      }
+
+      var titleEl = document.getElementById('payTitle');
+      var descEl = document.getElementById('payDesc');
+      var subEl = document.getElementById('paySubtitle');
+      var form = document.getElementById('payForm');
+      var errEl = document.getElementById('payError');
+      var cancelEl = document.getElementById('payCancelled');
+      var submitBtn = document.getElementById('paySubmit');
+
+      if (cancelled === '1') cancelEl.classList.remove('hidden');
+
+      if (kind === 'analysis' && (pack === 'single' || pack === 'pack3' || pack === 'pack5')) {
+        subEl.textContent = 'Game film & analysis';
+        if (pack === 'single') {
+          titleEl.textContent = 'Single game analysis — $125';
+          descEl.textContent = 'You’ll pay securely on the next screen. We’ll follow up for match footage.';
+        } else if (pack === 'pack3') {
+          titleEl.textContent = '3-game analysis pack — $400';
+          descEl.textContent = 'Three full analyses. Payment is one-time.';
+        } else {
+          titleEl.textContent = '5-game analysis pack — $600';
+          descEl.textContent = 'Five full analyses. Payment is one-time.';
+        }
+      } else if (kind === 'membership' && (plan === 'weekly' || plan === 'intensive')) {
+        subEl.textContent = 'Monthly membership';
+        if (plan === 'weekly') {
+          titleEl.textContent = 'Weekly Training + Film — $300/mo';
+          descEl.textContent = 'Recurring monthly subscription via Stripe. Cancel anytime in the customer portal (link on receipts) or contact us.';
+        } else {
+          titleEl.textContent = 'Intensive Training + Film — $450/mo';
+          descEl.textContent = 'Recurring monthly subscription via Stripe. Cancel anytime in the customer portal (link on receipts) or contact us.';
+        }
+      } else {
+        titleEl.textContent = 'Choose a product';
+        descEl.textContent = 'Open this page from Services & Pricing to buy analysis or start a membership.';
+        form.style.display = 'none';
+        return;
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errEl.classList.add('hidden');
+        errEl.textContent = '';
+        var base = apiBase();
+        if (!base) {
+          errEl.textContent = 'Payment service is not configured for this site build.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        var name = document.getElementById('payName').value.trim();
+        var email = document.getElementById('payEmail').value.trim();
+        var path = kind === 'analysis' ? '/api/public/checkout/analysis' : '/api/public/checkout/membership';
+        var body = kind === 'analysis' ? { pack: pack, name: name, email: email } : { plan: plan, name: name, email: email };
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Redirecting…';
+        fetch(base + path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (res) {
+            if (res.ok && res.data.checkoutUrl) {
+              location.href = res.data.checkoutUrl;
+              return;
+            }
+            var msg = res.data.error;
+            if (!msg && Array.isArray(res.data.errors)) msg = res.data.errors.join(' ');
+            if (!msg) msg = 'Could not start checkout. Try again or contact us.';
+            errEl.textContent = msg;
+            errEl.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Continue to payment';
+          })
+          .catch(function () {
+            errEl.textContent = 'Network error. Check your connection and try again.';
+            errEl.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Continue to payment';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -43,6 +43,7 @@
       }
       var params = new URLSearchParams(location.search);
       var sid = params.get('session_id');
+      var kindParam = params.get('kind');
       var base = apiBase();
       if (!sid || !base) return;
 
@@ -50,7 +51,53 @@
       var msg = document.getElementById('statusMsg');
       var icon = document.getElementById('statusIcon');
 
-      function poll() {
+      function analysisLabel(pack) {
+        if (pack === 'pack3') return '3-game analysis pack';
+        if (pack === 'pack5') return '5-game analysis pack';
+        return 'single game analysis';
+      }
+
+      function membershipLabel(plan) {
+        return plan === 'intensive' ? 'Intensive Training + Film' : 'Weekly Training + Film';
+      }
+
+      function pollCheckoutVerify() {
+        fetch(base + '/api/public/checkout/verify/' + encodeURIComponent(sid))
+          .then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+          .then(function (res) {
+            if (!res.ok) {
+              title.textContent = 'Could not verify payment';
+              msg.textContent = res.data.error || 'Please contact us if you were charged.';
+              return;
+            }
+            var d = res.data;
+            if (d.payment_status === 'paid') {
+              if (d.kind === 'analysis') {
+                title.innerHTML = 'Thank you! <span class="text-gold">Analysis purchased</span>';
+                msg.textContent = 'Payment received for your ' + analysisLabel(d.pack) + '. We’ll email you shortly with next steps for sending match footage.';
+                icon.innerHTML = '&#10003;';
+                return;
+              }
+              if (d.kind === 'membership') {
+                title.innerHTML = 'Welcome! <span class="text-gold">Membership started</span>';
+                msg.textContent = 'You’re enrolled in ' + membershipLabel(d.plan) + '. Check your email for confirmation. Your plan renews monthly; you can manage billing from links on Stripe receipts or by contacting us.';
+                icon.innerHTML = '&#10003;';
+                return;
+              }
+            }
+            if (d.status === 'open' || d.payment_status === 'unpaid') {
+              title.textContent = 'Processing payment…';
+              msg.textContent = 'Waiting for confirmation. This page will update automatically.';
+              setTimeout(pollCheckoutVerify, 2000);
+              return;
+            }
+            title.textContent = 'Payment status';
+            msg.textContent = 'Status: ' + (d.payment_status || d.status || 'unknown') + '. Contact us if you need help.';
+          })
+          .catch(function () { setTimeout(pollCheckoutVerify, 3000); });
+      }
+
+      function pollBooking() {
         fetch(base + '/api/public/bookings/session/' + encodeURIComponent(sid))
           .then(function (r) { return r.json(); })
           .then(function (data) {
@@ -63,15 +110,20 @@
             if (data.status === 'pending_payment') {
               title.textContent = 'Processing payment…';
               msg.textContent = 'Waiting for confirmation. This page will update automatically.';
-              setTimeout(poll, 2000);
+              setTimeout(pollBooking, 2000);
               return;
             }
             title.textContent = 'Booking status';
             msg.textContent = 'Status: ' + (data.status || 'unknown');
           })
-          .catch(function () { setTimeout(poll, 3000); });
+          .catch(function () { setTimeout(pollBooking, 3000); });
       }
-      poll();
+
+      if (kindParam === 'analysis' || kindParam === 'membership') {
+        pollCheckoutVerify();
+      } else {
+        pollBooking();
+      }
     })();
   </script>
 </body>

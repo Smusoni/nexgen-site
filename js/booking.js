@@ -90,8 +90,28 @@
 
     try {
       const r = await fetch(API_BASE + '/api/public/services');
-      if (!r.ok) throw new Error('Could not load services');
-      const services = await r.json();
+      let data;
+      try {
+        data = await r.json();
+      } catch (_) {
+        showServiceError('The booking API returned an invalid response. Is it running on port 4000?');
+        return;
+      }
+      if (!r.ok) {
+        var errText =
+          (data && (data.error || data.message)) || 'Could not load services (HTTP ' + r.status + ').';
+        if (r.status === 503 && data && data.code === 'DATABASE_UNAVAILABLE') {
+          errText =
+            'Local database is offline. Your live site uses Render’s Postgres; on your PC you need PostgreSQL too. Quick fix: from the project folder run `docker compose up -d`, then in `backend` run `npx prisma migrate deploy` and `npm run db:seed`. Details: README → Local preview.';
+        }
+        showServiceError(errText);
+        return;
+      }
+      if (!Array.isArray(data)) {
+        showServiceError('Unexpected API response. Try again or contact us.');
+        return;
+      }
+      var services = data;
       container.innerHTML = '';
 
       services.forEach(function (svc) {

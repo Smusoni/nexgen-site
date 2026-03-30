@@ -1,0 +1,18 @@
+# Local dev: Postgres for the booking API (matches backend/.env.example defaults).
+# From repo root: docker compose up -d
+# Then: cd backend && npx prisma migrate deploy && npm run db:seed && npm run dev
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: nexgen-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nexgen
+    ports:
+      - '5432:5432'
+    volumes:
+      - nexgen_pg_data:/var/lib/postgresql/data
+
+volumes:
+  nexgen_pg_data:

@@ -1,8 +1,14 @@
 import { Router, Request, Response } from 'express';
 import express from 'express';
+import Stripe from 'stripe';
 import { stripe } from '../../lib/stripe';
 import { config } from '../../config';
 import { confirmBooking, cancelBookingBySession } from '../../services/bookingService';
+import {
+  handleAnalysisCheckoutCompleted,
+  handleMembershipCheckoutCompleted,
+  syncMembershipFromStripeSubscription,
+} from '../../services/checkoutPurchaseService';
 
 const router = Router();
 
@@ -12,7 +18,7 @@ router.post(
   async (req: Request, res: Response) => {
     const sig = req.headers['stripe-signature'] as string;
 
-    let event;
+    let event: Stripe.Event;
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, config.stripe.webhookSecret);
     } catch (err: any) {
@@ -24,16 +30,33 @@ router.post(
     try {
       switch (event.type) {
         case 'checkout.session.completed': {
-          const session = event.data.object as {
-            id: string;
-            payment_intent?: string | { id: string } | null;
-          };
-          await confirmBooking(session.id, session.payment_intent ?? null);
+          const session = event.data.object as Stripe.Checkout.Session;
+          const meta = session.metadata || {};
+          if (meta.bookingId) {
+            await confirmBooking(session.id, session.payment_intent ?? null);
+          } else if (meta.checkoutKind === 'analysis') {
+            await handleAnalysisCheckoutCompleted(session);
+          } else if (meta.checkoutKind === 'membership') {
+            await handleMembershipCheckoutCompleted(session);
+          }
           break;
         }
         case 'checkout.session.expired': {
-          const session = event.data.object as any;
-          await cancelBookingBySession(session.id);
+          const session = event.data.object as Stripe.Checkout.Session;
+          const meta = session.metadata || {};
+          if (meta.bookingId) {
+            await cancelBookingBySession(session.id);
+          }
+          break;
+        }
+        case 'customer.subscription.updated': {
+          const sub = event.data.object as Stripe.Subscription;
+          await syncMembershipFromStripeSubscription(sub);
+          break;
+        }
+        case 'customer.subscription.deleted': {
+          const sub = event.data.object as Stripe.Subscription;
+          await syncMembershipFromStripeSubscription(sub);
           break;
         }
         default:
